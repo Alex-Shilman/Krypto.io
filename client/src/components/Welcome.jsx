@@ -1,8 +1,11 @@
+import { useContext } from 'react';
 import { AiFillPlayCircle } from 'react-icons/ai';
 import { SiEthereum } from 'react-icons/si';
 import { BsInfoCircle } from 'react-icons/bs';
 
 import { Loader } from './';
+import { shortenAddress } from '../utils/shortenAddress';
+import { TransactionContext } from '../context/TransactionContext';
 
 const commonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 const Input = ({ placeholder, name, type, value, handleChange }) => (
@@ -18,9 +21,15 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-    const connectWallet = () => {};
-    const handleChange = () => {};
-    const handleSubmit = () => {};
+    const { connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction  } = useContext(TransactionContext) || {};
+    const handleSubmit = (e) => {
+        e.preventDafault;
+        const { addressTo, amount, keyword, message } = formData;
+
+        if (!addressTo || !amount || !keyword || !message) return;
+
+        sendTransaction(addressTo, amount, keyword, message)
+    };
     return (
         <div className="flex w-full justify-center items-center">
             <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
@@ -31,7 +40,9 @@ const Welcome = () => {
                         type="button"
                         className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
                         onClick={connectWallet}>
-                        <p className="text-white text-bold text-base">Connect Wallet</p>
+                        <p className="text-white text-bold text-base">
+                          { Boolean(currentAccount) ? 'Disconnect Wallet' : 'Connect Wallet' }
+                        </p>
                     </button>
                     <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
                         <div className={`rounded-tl-2xl ${commonStyles}`}>Reliability</div>
@@ -53,7 +64,7 @@ const Welcome = () => {
                             </div>
                             <div>
                                 <p className="text-white font-light text-sm">
-                                    Address
+                                    {shortenAddress(currentAccount)} 
                                 </p>
                                 <p className="text-white font-semibold text-lg mt-1">
                                     Ethereum
@@ -61,14 +72,14 @@ const Welcome = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+                    <form className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
                         <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange}/>
                         <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange}/>
                         <Input placeholder="Keword {GIF}" name="keyword" type="text" handleChange={handleChange}/>
                         <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange}/>
-                        <div className="h-[1px] w-full bg-gray-400 my-2"/>
+                        <hr className="h-[1px] w-full bg-gray-400 my-2"/>
                         {
-                            true 
+                            false 
                                 ? <Loader/> 
                                 : <button 
                                     className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer" 
@@ -77,7 +88,7 @@ const Welcome = () => {
                                         Send Now
                                    </button>
                         }
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
