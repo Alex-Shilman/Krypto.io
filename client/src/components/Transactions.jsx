@@ -2,6 +2,7 @@ import { useContext } from 'react';
 
 import { TransactionContext } from '../context/TransactionContext';
 import { shortenAddress } from '../utils/shortenAddress';
+import useFetch from '../hooks/useFetch';
 import dummyData from '../utils/dummyData';
 
 const TransactionCard = ({
@@ -11,7 +12,9 @@ const TransactionCard = ({
     timestamp, 
     addressFrom, 
     amount, 
-    addressTo }) => {
+    addressTo,
+    keyword }) => {
+        const gifUrl = useFetch({ keyword });    
         return (
             <div className="flex flex-1 bg-[#181918] m-4 
                 2xl:min-w-[450px]
@@ -30,9 +33,14 @@ const TransactionCard = ({
                         </a>
                         <p className="text-white text-base "><strong>Amount:</strong> {amount} Eth</p>
                         {message && <p className="text-white text-base"><strong>Message:</strong>{message}</p>}
-                        <div className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl">
-                            <p className="text-[#37c7da] font-bold">{timestamp}</p>
-                        </div>
+                    </div>
+                    <img 
+                        src={gifUrl || url}
+                        alt="gif"
+                        className="w-full h-64 2x:h-96 rounded-md shadow-lg object-cover"
+                    />
+                    <div className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl">
+                        <p className="text-[#37c7da] font-bold">{timestamp}</p>
                     </div>
                 </div>
             </div>
@@ -56,7 +64,8 @@ const Transactions = () => {
                         timestamp, 
                         addressFrom, 
                         amount, 
-                        addressTo
+                        addressTo,
+                        keyword,
                     }) => (
                         <TransactionCard 
                             key={id}
@@ -66,6 +75,7 @@ const Transactions = () => {
                             addressFrom={addressFrom} 
                             amount={amount}
                             addressTo={addressTo}
+                            keyword={keyword}
                         />
                     ))}
                 </div>
