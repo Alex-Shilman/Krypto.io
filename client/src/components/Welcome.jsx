@@ -21,10 +21,10 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-    const { connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction  } = useContext(TransactionContext) || {};
+    const { connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction, isLoading  } = useContext(TransactionContext) || {};
     const handleSubmit = (e) => {
         e.preventDafault;
-        const { addressTo, amount, keyword, message } = formData;
+        const { addressTo, amount, keyword, message } = formData || {};
 
         if (!addressTo || !amount || !keyword || !message) return;
 
@@ -79,7 +79,7 @@ const Welcome = () => {
                         <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange}/>
                         <hr className="h-[1px] w-full bg-gray-400 my-2"/>
                         {
-                            false 
+                            isLoading 
                                 ? <Loader/> 
                                 : <button 
                                     className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer" 
